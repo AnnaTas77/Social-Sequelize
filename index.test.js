@@ -11,10 +11,11 @@ describe("Social Sequelzie Test", () => {
   /**
    * Runs the code prior to all tests
    */
-  beforeAll(async () => {
+  beforeEach(async () => {
     // the 'sync' method will create tables based on the model class
     // by setting 'force:true' the tables are recreated each time the test suite is run
     await db.sync({ force: true });
+    // recreates the DB
   });
 
   // Write your tests here
@@ -47,5 +48,16 @@ describe("Social Sequelzie Test", () => {
     await Comment.bulkCreate(commentsSeed);
     const foundComment = await Comment.findByPk(1);
     expect(foundComment).toEqual(expect.objectContaining(commentsSeed[0]));
+  });
+
+  test("User can have only one Profile", async () => {
+    const myUser = await User.create(usersSeed[0]);
+    const myProfile = await Profile.create(profilesSeed[0]);
+
+    await myUser.setProfile(myProfile);
+    const associatedProfile = await myUser.getProfile();
+    console.log(associatedProfile.toJSON());
+
+    expect(associatedProfile instanceof Profile).toBeTruthy();
   });
 });
