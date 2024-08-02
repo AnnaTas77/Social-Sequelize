@@ -1,23 +1,51 @@
 const { Comment, Like, Post, Profile, User } = require("./index");
-const { db } = require('./db/connection.js');
+const { db } = require("./db/connection.js");
 
-describe('Social Sequelzie Test', () => {
-    /**
-     * Runs the code prior to all tests
-     */
-    beforeAll(async () => {
-        // the 'sync' method will create tables based on the model class
-        // by setting 'force:true' the tables are recreated each time the test suite is run
-        await sequelize.sync({ force: true });
-    })
+const usersSeed = require("./seed/users.json");
+const profilesSeed = require("./seed/profiles.json");
+const postsSeed = require("./seed/posts.json");
+const likesSeed = require("./seed/likes.json");
+const commentsSeed = require("./seed/comments.json");
 
-    // Write your tests here
-    
-    test("replace with your test", function() {
-        expect(true).toBe(true);
-    })
+describe("Social Sequelzie Test", () => {
+  /**
+   * Runs the code prior to all tests
+   */
+  beforeAll(async () => {
+    // the 'sync' method will create tables based on the model class
+    // by setting 'force:true' the tables are recreated each time the test suite is run
+    await db.sync({ force: true });
+  });
 
+  // Write your tests here
 
+  test("can create User", async function () {
+    await User.bulkCreate(usersSeed);
+    const foundUser = await User.findByPk(1);
+    expect(foundUser).toEqual(expect.objectContaining(usersSeed[0]));
+  });
 
+  test("can create Profile", async function () {
+    await Profile.bulkCreate(profilesSeed);
+    const foundProfile = await Profile.findByPk(1);
+    expect(foundProfile).toEqual(expect.objectContaining(profilesSeed[0]));
+  });
 
-})
+  test("can create Post", async function () {
+    await Post.bulkCreate(postsSeed);
+    const foundPost = await Post.findByPk(1);
+    expect(foundPost).toEqual(expect.objectContaining(postsSeed[0]));
+  });
+
+  test("can create Like", async function () {
+    await Like.bulkCreate(likesSeed);
+    const foundLike = await Like.findByPk(1);
+    expect(foundLike).toEqual(expect.objectContaining(likesSeed[0]));
+  });
+
+  test("can create Comment", async function () {
+    await Comment.bulkCreate(commentsSeed);
+    const foundComment = await Comment.findByPk(1);
+    expect(foundComment).toEqual(expect.objectContaining(commentsSeed[0]));
+  });
+});
