@@ -50,7 +50,7 @@ describe("Social Sequelzie Test", () => {
     expect(foundComment).toEqual(expect.objectContaining(commentsSeed[0]));
   });
 
-  test("User can have only one Profile", async () => {
+  test("User can have only one Profile - one-to-one", async () => {
     const myUser = await User.create(usersSeed[0]);
     const myProfile = await Profile.create(profilesSeed[0]);
 
@@ -61,7 +61,7 @@ describe("Social Sequelzie Test", () => {
     expect(associatedProfile instanceof Profile).toBeTruthy();
   });
 
-  test("User can have many Likes", async () => {
+  test("User can have many Likes - many-to-many", async () => {
     let myUser = await User.create(usersSeed[0]);
     let myLike1 = await Like.create(likesSeed[0]);
     let myLike2 = await Like.create(likesSeed[1]);
@@ -73,5 +73,19 @@ describe("Social Sequelzie Test", () => {
     // console.log("associatedLikes: ", JSON.stringify(associatedLikes, null, 2));
     expect(associatedLikes.length).toBe(2);
     expect(associatedLikes instanceof Like).toBeTruthy;
+  });
+
+  test("Likes can have many Users - many-to-many", async () => {
+    let myLike = await Like.create(likesSeed[0]);
+    let myUser1 = await User.create(usersSeed[0]);
+    let myUser2 = await User.create(usersSeed[1]);
+
+    await myLike.addUser(myUser1);
+    await myLike.addUser(myUser2);
+
+    const associatedUsers = await myLike.getUsers();
+    // console.log("associatedUsers: ", JSON.stringify(associatedUsers, null, 2));
+    expect(associatedUsers.length).toBe(2);
+    expect(associatedUsers instanceof User).toBeTruthy;
   });
 });
