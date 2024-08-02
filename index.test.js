@@ -56,8 +56,22 @@ describe("Social Sequelzie Test", () => {
 
     await myUser.setProfile(myProfile);
     const associatedProfile = await myUser.getProfile();
-    console.log(associatedProfile.toJSON());
+    // console.log("associatedProfile: ", associatedProfile.toJSON());
 
     expect(associatedProfile instanceof Profile).toBeTruthy();
+  });
+
+  test("User can have many Likes", async () => {
+    let myUser = await User.create(usersSeed[0]);
+    let myLike1 = await Like.create(likesSeed[0]);
+    let myLike2 = await Like.create(likesSeed[1]);
+
+    await myUser.addLike(myLike1);
+    await myUser.addLike(myLike2);
+
+    const associatedLikes = await myUser.getLikes();
+    // console.log("associatedLikes: ", JSON.stringify(associatedLikes, null, 2));
+    expect(associatedLikes.length).toBe(2);
+    expect(associatedLikes instanceof Like).toBeTruthy;
   });
 });
